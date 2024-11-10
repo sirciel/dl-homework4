@@ -217,3 +217,31 @@ class WaypointLoss(nn.Module):
         loss = masked_mse.sum() / waypoints_mask.sum()
 
         return loss
+
+class ClassificationLoss(nn.Module):
+    def forward(self, logits: torch.Tensor, target: torch.LongTensor) -> torch.Tensor:
+        """
+        Multi-class classification loss
+
+        Args:
+            logits: tensor (b, c) logits, where c is the number of classes
+            target: tensor (b,) labels
+
+        Returns:
+            tensor, scalar loss
+        """
+        return nn.functional.cross_entropy(logits, target)
+
+class RegressionLoss(nn.Module):
+    def forward(self, logits: torch.Tensor, target: torch.LongTensor) -> torch.Tensor:
+        """
+        Mean Absolute Error (MAE) loss
+
+        Args:
+            logits: tensor (b,) predictions (regression outputs)
+            target: tensor (b,) ground truth values
+
+        Returns:
+            tensor, scalar loss
+        """
+        return nn.functional.l1_loss(logits, target)
